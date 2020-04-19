@@ -1,8 +1,8 @@
-function getLocalStorage(key) {
+function loadTasks(key) {
     let value = localStorage.getItem(key);
     if (value) {
         $(`#text${key}`).text(value);
-    }
+    } 
 }
 
 // display today's date in header
@@ -19,7 +19,7 @@ $(document).ready(function() {
         var row = $(`<div data-time=${i} id='${i}' class="row time-block past">`);
 
         // create time column
-        var colTime = $('<div class="col-md-1 hour">' + diplayHours(i) + '</div>');
+        var colTime = $('<div class="col-md-1 hour">' + displayHours(i) + '</div>');
 
         //create event column
         var colTask = $(`<textarea id=text${i} class="col-md-10 description"></textarea>`);        
@@ -35,41 +35,46 @@ $(document).ready(function() {
         // add rows to container
         $(".container").append(row);
 
-        getLocalStorage(i);
+        loadTasks(i);
     }
 
-    function diplayHours(hours) {
+    function displayHours(hours) {
         var ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
         hours = hours ? hours : 12;
         return hours + ampm;
     }
-    diplayHours();
+    displayHours();
 
-// audit time slot to determine past, present, future and color accordingly (past=grey, present=red, future=green)
-function auditSchedule(){
-        var currentTime = new Date().getHours();
-        for (var i = 8; i < 21; i++) { 
-        console.log(currentTime, $(`#${i}`).data("time"));
-        if ($(`#${i}`).data("time") == currentTime) {
-            $(`#text${i}`).addClass("present");
-        } else if (currentTime < $(`#${i}`).data("time")) {
-            $(`#text${i}`).addClass("future");
+    // audit time slot to determine past, present, future and color accordingly (past=grey, present=red, future=green)
+    function auditSchedule() {
+        var now = new Date().getHours(); //current hour
+            for (var i = 8; i < 21; i++) { 
+            if ($(`#${i}`).data("time") == now) {
+                $(`#text${i}`).addClass("present");
+            } else if (now < $(`#${i}`).data("time")) {
+                $(`#text${i}`).addClass("future");
+            }
         }
     }
-}
+    auditSchedule(); //to run auditSchedule on load
 
+    //save time and input to local storage when save button is clicked
+    $('.saveBtn').on('click', function() {
+        let eventTime = $(this).attr('id');
+        let eventText = $(this).siblings('.description').val();
+        //prevent null values from being saved to local storage
+        if (eventText == "") {
+            window.alert("Input cannot be blank. Please enter text to save to scheduler.")
+        } else {
+        localStorage.setItem(eventTime, eventText);
+        }
+    });
+    
+        
+    setInterval(function() {
+        auditSchedule();
+    }, 1000);
 
-//save time and input to local storage when save button is clicked
-var saveBtn = $('.saveBtn');
-saveBtn.on('click', function(){
-    let eventId = $(this).attr('id');
-    let eventText = $(this).siblings('.description').val();
-    localStorage.setItem(eventId, eventText);
+    
 });
-
-setInterval(function() {
-    auditSchedule();
-}, 1000);
-});
-
