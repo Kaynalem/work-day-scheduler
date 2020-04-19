@@ -66,6 +66,7 @@ $(document).ready(function() {
         //prevent null values from being saved to local storage
         if (eventText == "") {
             window.alert("Input cannot be blank. Please enter text to save to scheduler.")
+            localStorage.removeItem(eventTime, eventText);//deletes previously saved event in local storage if user wants to hour to be cleared
         } else {
         localStorage.setItem(eventTime, eventText);
         }
