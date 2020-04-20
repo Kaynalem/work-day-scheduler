@@ -72,7 +72,7 @@ $(document).ready(function() {
         }
     });
     
-    // refresh page at midnight
+    // refresh page at 7am
     $(document).ready(function() { 
         function refreshAt(hours, minutes, seconds) {
             var now = new Date();
@@ -91,10 +91,10 @@ $(document).ready(function() {
             setTimeout(function() { window.location.reload(true); }, timeout);
 
         }  
-        refreshAt(24,0,0);
-        //clear local storage and input fields at midnight so schedule is empty on new day
+        refreshAt(7,0,0);
+        //clear local storage and input fields at 7am so schedule is empty on new day
         var now = new Date().getHours();
-        if (now == 24) {
+        if (now == 7) {
         localStorage.clear();
         $('.description').val("");
         }
