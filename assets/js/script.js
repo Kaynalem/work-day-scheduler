@@ -25,7 +25,7 @@ $(document).ready(function() {
         var colTask = $(`<textarea id=text${i} class="col-md-10 description"></textarea>`);        
     
         //create save column
-        var colSave = $(`<button class="btn saveBtn col-md-1" id=${i}><span class="oi oi-document"></span></button>`)
+        var colSave = $(`<button class="btn saveBtn col-md-1" id=${i}><span class="fas fa-save"></span></button>`)
         
         // append columns to row
         row.append(colTime);
@@ -65,17 +65,43 @@ $(document).ready(function() {
         let eventText = $(this).siblings('.description').val();
         //prevent null values from being saved to local storage
         if (eventText == "" || eventText === null || eventText.charAt(0) == " ") {             
-            window.alert("Input cannot be blank. Please enter text to save to scheduler.")//prevents user from submitting blank or " " to local storage
+            window.alert('Input cannot be blank or begin with a space " ". Please enter text to save to scheduler.')//prevents user from submitting blank or " " to local storage
             localStorage.removeItem(eventTime, eventText);//deletes previously saved event in local storage if user wants to hour to be cleared
         } else {
         localStorage.setItem(eventTime, eventText);
         }
     });
     
+    // refresh page at midnight
+    $(document).ready(function() { 
+        function refreshAt(hours, minutes, seconds) {
+            var now = new Date();
+            var then = new Date();
         
+            if (now.getHours() > hours ||
+                (now.getHours() == hours && now.getMinutes() > minutes) ||
+                now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+                then.setDate(now.getDate() + 1);
+            }
+            then.setHours(hours);
+            then.setMinutes(minutes);
+            then.setSeconds(seconds);
+        
+            var timeout = (then.getTime() - now.getTime());
+            setTimeout(function() { window.location.reload(true); }, timeout);
+
+        }  
+        refreshAt(24,0,0);
+        //clear local storage and input fields at midnight so schedule is empty on new day
+        var now = new Date().getHours();
+        if (now == 24) {
+        localStorage.clear();
+        $('.description').val("");
+        }
+        
+    });    
     setInterval(function() {
         auditSchedule();
     }, 1000);
-
     
 });
