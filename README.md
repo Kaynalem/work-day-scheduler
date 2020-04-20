@@ -12,4 +12,4 @@
 [Work Day Scheduler Page](https://kaynalem.github.io/work-day-scheduler/)
 
 ### Page Mock-up
-![mock-up](/assets/images/work-day-scheduler-mockup.png)
+![mock-up](mockup.png)
